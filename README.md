@@ -28,3 +28,10 @@ The library exists to make test assertions on objects with side effects. Instead
 The awkward edge is async ordering. Each log entry is appended at call time; entries are not reordered when promises settle. Synchronous results are final when pushed; async entries are mutated in place to their settled kind (`async-resolved` / `async-rejected`) when the promise resolves. If a test inspects an async entry before awaiting the return value, the entry will still read `async-pending`.
 
 `MethodCallRecorder(target)` returns `{ proxy, getLog, snapshot, clear }`. `getAsyncMethods(target)` returns the names of no-argument methods that return Promises.
+
+## Performance
+
+The window keeps a bounded buffer, so `push` is constant time and memory does not
+grow with the length of the stream. `peak` and `trough` are linear in the window
+size, which is the trade that keeps `push` cheap.
+
